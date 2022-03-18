@@ -1,14 +1,19 @@
-var FileSaver = require("file-saver");
+const fs = require("fs");
 
-const VideoReceiver = (req) => {
-  // console.log(req);
-  // let fileName = response.fileName;
-  // let blob = response.data;
-  // let type = response.type;
+const VideoReceiver = (data) => {
+  let fileName = data["fileName"];
+  let blob = data.data;
+  let type = data.type;
+
   // console.log(fileName);
-  // console.log(blob);
-  // console.log(type);
-  // FileSaver.saveAs(blob, "../videos/" + fileName);
+  // console.log(data);
+
+  // let file = new File(blob, fileName, {
+  //   type: type,
+  //   lastModified: new Date().getTime(),
+  // });
+
+  // fs.createWriteStream("../videos" + fileName).write(blob);
 };
 
 module.exports = { VideoReceiver };

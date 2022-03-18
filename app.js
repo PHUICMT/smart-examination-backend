@@ -4,6 +4,7 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var cors = require("cors");
+var formidable = require("formidable");
 
 var app = express();
 
@@ -18,14 +19,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.post("/upload-video", function (req, res) {
+  console.log(req.body);
+
   if (!req.body) {
     console.log("No file received");
     return res.status(400).json({ message: "Can't Accept" });
   } else {
-    console.log("----------------req.body-------------");
-    console.log(req.body);
-    console.log("-------------------------------------");
-    tools.VideoReceiver(req.data);
+    tools.VideoReceiver(req.body);
     return res.status(200);
   }
 });
