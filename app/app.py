@@ -44,8 +44,8 @@ def upload_webcam_file():
         }), 200
 
 
-@app.route('/process-video', methods=['POST'])
-def process_webcam():
+# @app.route('/process-video', methods=['POST'])
+# def process_webcam():
     # all_json = request.get_json()
     # uuid = request.json['uuid']
     # filename = "["+uuid+"]"+'webcam.webm'
@@ -65,8 +65,7 @@ def process_webcam():
     #     routing_key='dataFromBackend',
     #     body=message
     # )
-
-    return jsonify({"response": "RabbitMQ Accepted!"}), 200
+#     return jsonify({"response": "RabbitMQ Accepted!"}), 200
 
 
 if __name__ == '__main__':
