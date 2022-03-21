@@ -29,13 +29,19 @@ def upload_webcam_file():
     filename = request.form.get("fileName", False)
     save_video_result = save_video(uploaded_file, filename)
 
-    print("save_video_result")
     print(filename)
     total_emotion, total_emotion_time, start_end_time = run_predict(
         './app/video_storage/'+filename)
-    predictions_result = json.dumps(total_emotion)
 
-    return jsonify(predictions_result), 200
+    predictions_result = json.dumps(total_emotion)
+    emotion_time = json.dumps(total_emotion_time)
+    start_end = json.dumps(start_end_time)
+
+    return jsonify({
+        'predictions_result':predictions_result,
+        'emotion_time':emotion_time,
+        'start_end':start_end
+        }), 200
 
 
 @app.route('/process-video', methods=['POST'])
