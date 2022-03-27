@@ -50,6 +50,26 @@ def save_result_to_database(request):
         exam_items_time_stamp)
     return execute_database(sql_insert_query, insert_tuple)
 
+def save_exam_to_database(request):
+    exam_pin = request.json['examPin']
+    exam_name = request.json['examName']
+    teacher_id = request.json['teacher_id']
+    items_count = request.json['items_count']
+    score = request.json['score']
+    exam = json.dumps(request.json['exam'])
+   
+    sql_insert_query = " INSERT INTO Examination (exam_pin, exam_name, teacher_id, items_count, score, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    insert_tuple = (
+        exam_pin,
+        exam_name,
+        teacher_id,
+        items_count,
+        score,
+        exam,
+        current_time
+    )
+    return execute_database(sql_insert_query, insert_tuple)
+
 def set_db(mydb_input):
     global mydb
     mydb = mydb_input
