@@ -43,6 +43,11 @@ def save_result():
     result = save_result_to_database(request)
     return jsonify({'save-result': 'Success'}), 200
 
+@app.route('/save-exam', methods=['POST'])
+def save_result():
+    result = save_exam_to_database(request)
+    return jsonify({'save-exam': 'Success'}), 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

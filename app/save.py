@@ -75,11 +75,13 @@ def set_db(mydb_input):
     mydb = mydb_input
 
 def execute_database(sql_insert_query, insert_tuple):
+    if mydb is None:
+        return False
     cursor = mydb.cursor()
     try:
         result = cursor.execute(sql_insert_query, insert_tuple)
         mydb.commit()
-        print("save.py -> Success result: ", result)
+        print("save.py -> Success result: Saved!")
         return result
     except Exception as e:
         print("save.py -> Error result: ", e)
