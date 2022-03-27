@@ -11,11 +11,11 @@ class processThread (threading.Thread):
         self.fileName = fileName
         self.mydb = mydb
     def run(self):
-        print ("Starting " + self.threadName)
+        print ("Starting..." + self.threadName)
 
         process_and_save_result(self.threadName, self.fileName, self.mydb)
 
-        print ("Exiting " + self.threadName)
+        print ("Exiting..." + self.threadName)
 
 def process_and_save_result(threadName, fileName, mydb):
     exam_pin, subject_id, student_id, date = clean_text_and_get_video_data(fileName)
