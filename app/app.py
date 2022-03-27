@@ -3,7 +3,6 @@ from flask_cors import CORS, cross_origin
 
 import json
 import requests
-import pika
 import mysql.connector
 
 from save import *
@@ -22,12 +21,6 @@ set_db(mydb)
 app = Flask(__name__)
 cors = CORS(app)
 app.config['CORS_HEADERS'] = '*'
-
-# credentials = pika.PlainCredentials('admin', 'admin')
-# parameters = pika.ConnectionParameters(
-#     host='rabbitmq', port='5672', heartbeat=0, credentials=credentials)
-# connection = pika.BlockingConnection(parameters)
-# channel = connection.channel()
 
 
 global predictions_result
@@ -49,29 +42,6 @@ def upload_webcam_file():
 def save_result():
     result = save_result_to_database(request)
     return jsonify({'save-result': 'Success'}), 200
-
-# @app.route('/process-video', methods=['POST'])
-# def process_webcam():
-    # all_json = request.get_json()
-    # uuid = request.json['uuid']
-    # filename = "["+uuid+"]"+'webcam.webm'
-    # total_emotion, total_emotion_time, start_end_time = run_predict(
-    #     './app/video_storage/'+filename)
-    # predictions_result = json.dumps(total_emotion)
-    # save_backend_result_to_database(uuid, predictions_result)
-    # channel.queue_declare(queue='dataFromBackend', durable=True)
-    # message = json.dumps({
-    #     "predictions_result": predictions_result,
-    #     "total_emotion_time": total_emotion_time,
-    #     "start_end_time": start_end_time,
-    #     "all_json": all_json
-    # })
-    # channel.basic_publish(
-    #     exchange='',
-    #     routing_key='dataFromBackend',
-    #     body=message
-    # )
-#     return jsonify({"response": "RabbitMQ Accepted!"}), 200
 
 
 if __name__ == '__main__':
