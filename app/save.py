@@ -2,22 +2,13 @@ from util.string_util import *
 
 import os
 from datetime import datetime
-import mysql.connector
-import uuid
+import json
 
 UPLOAD_FOLDER = './app/video_storage'
-mydb = mysql.connector.connect(
-    host="localhost",
-    port="3306",
-    user="admin",
-    password="P@ssw0rd",
-    database="smart_examination"
-)
-cursor = mydb.cursor()
 
 now = datetime.now()
 current_time = now.strftime('%Y-%m-%d %H:%M:%S')
-
+mydb = None
 
 def save_video(file, filename):
     video_uuid = genarate_uuid()
@@ -45,9 +36,9 @@ def save_result_to_database(request):
     result_id = genarate_uuid()
     studentId = request.json['studentId']
     exam_pin = request.json['examPin']
-    answer = request.json['resultPerItems']
-    start_and_end_time = request.json['startAndEndTime']
-    exam_items_time_stamp = request.json['examItemsTimeStamp']
+    answer = json.dumps(request.json['resultPerItems'])
+    start_and_end_time = json.dumps(request.json['startAndEndTime'])
+    exam_items_time_stamp = json.dumps(request.json['examItemsTimeStamp'])
    
     sql_insert_query = " INSERT INTO Results (id, student_id, exam_pin, answer, start_and_end_time, exam_items_time_stamp) VALUES (%s,%s,%s,%s,%s,%s)"
     insert_tuple = (
@@ -59,11 +50,18 @@ def save_result_to_database(request):
         exam_items_time_stamp)
     return execute_database(sql_insert_query, insert_tuple)
 
+def set_db(mydb_input):
+    global mydb
+    mydb = mydb_input
+
 def execute_database(sql_insert_query, insert_tuple):
+    cursor = mydb.cursor()
     try:
         result = cursor.execute(sql_insert_query, insert_tuple)
         mydb.commit()
+        print("save.py -> Success result: ", result)
         return result
     except Exception as e:
+        print("save.py -> Error result: ", e)
         return e
     

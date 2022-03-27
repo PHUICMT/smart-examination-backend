@@ -4,11 +4,20 @@ from flask_cors import CORS, cross_origin
 import json
 import requests
 import pika
+import mysql.connector
 
 from save import *
 from thread_process import *
-from emotion_recognition import run_predict
 from flask import Flask, request, jsonify
+
+mydb = mysql.connector.connect(
+    host="localhost",
+    port="3306",
+    user="admin",
+    password="P@ssw0rd",
+    database="smart_examination"
+)
+set_db(mydb)
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -30,7 +39,7 @@ def upload_webcam_file():
     fileName = request.form.get("fileName", False)
     save_video_result = save_video(uploaded_file, fileName)
 
-    start_process = processThread('Thread-'+fileName, fileName)
+    start_process = processThread('Thread-'+fileName, fileName, mydb)
     start_process.start()
     start_process.join()
 
