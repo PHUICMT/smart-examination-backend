@@ -53,10 +53,10 @@ def save_result_to_database(request):
 def save_exam_to_database(request):
     exam_pin = request.json['examPin']
     exam_name = request.json['examName']
-    teacher_id = request.json['teacher_id']
-    items_count = request.json['items_count']
+    teacher_id = request.json['teacherId']
+    items_count = request.json['itemCount']
     score = request.json['score']
-    exam = json.dumps(request.json['exam'])
+    exam = json.dumps(request.json['examItems'])
    
     sql_insert_query = " INSERT INTO Examination (exam_pin, exam_name, teacher_id, items_count, score, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
     insert_tuple = (
