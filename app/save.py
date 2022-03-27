@@ -27,17 +27,19 @@ def save_video(file, filename):
     created_file = open(filePath,"w+")
     file.save(filePath)
     created_file.close()
-    
+
     sql_insert_query = " INSERT INTO Videos (id, file_name, student_id, subject_id, exam_pin, created_at) VALUES (%s,%s,%s,%s,%s,%s)"
     insert_tuple = (
         video_uuid, 
         filename, 
         student_id, 
         subject_id, 
-        exam_pin, 
+        exam_pin,   
         date.replace('_',"/")
         )
+
     return execute_database(sql_insert_query, insert_tuple)
+
 
 def save_result_to_database(request):
     result_id = genarate_uuid()

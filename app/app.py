@@ -6,6 +6,7 @@ import requests
 import pika
 
 from save import *
+from thread_process import *
 from emotion_recognition import run_predict
 from flask import Flask, request, jsonify
 
@@ -26,26 +27,19 @@ global predictions_result
 def upload_webcam_file():
 
     uploaded_file = request.files['file']
-    filename = request.form.get("fileName", False)
-    save_video_result = save_video(uploaded_file, filename)
+    fileName = request.form.get("fileName", False)
+    save_video_result = save_video(uploaded_file, fileName)
 
-    total_emotion, total_emotion_time, start_end_time = run_predict(
-        './app/video_storage/'+filename)
+    start_process = processThread('Thread-'+fileName, fileName)
+    start_process.start()
+    start_process.join()
 
-    predictions_result = json.dumps(total_emotion)
-    emotion_time = json.dumps(total_emotion_time)
-    start_end = json.dumps(start_end_time)
-
-    return jsonify({
-        'predictions_result':predictions_result,
-        'emotion_time':emotion_time,
-        'start_end':start_end
-        }), 200
+    return jsonify({'upload-result':'Success'}), 200
 
 @app.route('/save-result', methods=['POST'])
 def save_result():
     result = save_result_to_database(request)
-    return jsonify({'save-result': result}), 200
+    return jsonify({'save-result': 'Success'}), 200
 
 # @app.route('/process-video', methods=['POST'])
 # def process_webcam():
