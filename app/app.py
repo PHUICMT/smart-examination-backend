@@ -58,9 +58,20 @@ def get_exam():
     examPin = request.args.get('exampin')
     try:
         exam = get_exam_from_database(examPin)
-        data = json.loads(exam[0][0])
+        data = {
+            'exam_pin': exam[0][0],
+            'exam_subject': exam[0][1],
+            'exam_title': exam[0][2],
+            'exam_description': exam[0][3],
+            'teacher_id': exam[0][4],
+            'items_count': exam[0][5],
+            'score': exam[0][6],
+            'exam': json.loads(exam[0][7]),
+            'created_at': exam[0][8]
+        }
         return jsonify({'exam_items': data}), 200
-    except:
+    except Exception as e:
+        print(e)
         return jsonify({'exam_items': False}), 200
 
 if __name__ == '__main__':
