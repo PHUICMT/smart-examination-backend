@@ -5,10 +5,11 @@ import json
 import requests
 import mysql.connector
 
-from save import *
-from get import *
-from calculate import *
-from thread_process import *
+import save as save
+import get as get
+import calculate as cal
+
+from thread_process import * 
 from flask import Flask, request, jsonify
 
 mydb = mysql.connector.connect(
@@ -22,7 +23,9 @@ mydb = mysql.connector.connect(
 )
 mydb.set_charset_collation(charset='utf8', collation='utf8_general_ci')
 
-set_db(mydb)
+save.set_db(mydb)
+get.set_db(mydb)
+cal.set_db(mydb)
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -36,7 +39,7 @@ def upload_webcam_file():
 
     uploaded_file = request.files['file']
     fileName = request.form.get("fileName", False)
-    save_video_result = save_video(uploaded_file, fileName)
+    save_video_result = save.save_video(uploaded_file, fileName)
 
     start_process = processThread('Thread-'+fileName, fileName, mydb)
     start_process.start()
@@ -46,19 +49,24 @@ def upload_webcam_file():
 
 @app.route('/save-result', methods=['POST'])
 def save_result():
-    result = save_result_to_database(request)
+    result = save.save_result_to_database(request)
     return jsonify({'save-result': True}), 200
 
 @app.route('/save-exam', methods=['POST'])
 def save_exam():
-    result = save_exam_to_database(request)
+    result = save.save_exam_to_database(request)
     return jsonify({'save-exam': True}), 200
+
+@app.route('/login', methods=['POST'])
+def login():
+    result = save.check_user_id_exist(request)
+    return jsonify({'login': result}), 200    
 
 @app.route('/get-exam', methods=['GET'])
 def get_exam():
     examPin = request.args.get('exampin')
     try:
-        exam = get_exam_from_database(examPin)
+        exam = get.get_exam_from_database(examPin)
         data = {
             'exam_pin': exam[0][0],
             'exam_subject': exam[0][1],
@@ -79,7 +87,7 @@ def get_exam():
 def get_result():
     examPin = request.args.get('exampin')
     try:
-        data = get_exam_result_from_database(examPin)
+        data = cal.get_exam_result_from_database(examPin)
         return jsonify({'result': data}), 200
     except Exception as e:
         print(e)
