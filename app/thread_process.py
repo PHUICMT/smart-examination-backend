@@ -12,9 +12,7 @@ class processThread (threading.Thread):
         self.mydb = mydb
     def run(self):
         print ("Starting..." + self.threadName)
-
         process_and_save_result(self.threadName, self.fileName, self.mydb)
-
         print ("Exiting..." + self.threadName)
 
 def process_and_save_result(threadName, fileName, mydb):

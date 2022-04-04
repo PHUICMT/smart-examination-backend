@@ -82,7 +82,6 @@ def get_exam():
         }
         return jsonify({'exam_items': data}), 200
     except Exception as e:
-        print(e)
         return jsonify({'exam_items': False}), 200
 
 @app.route('/get-result', methods=['GET'])
@@ -92,7 +91,6 @@ def get_result():
         data = cal.get_exam_result_from_database(examPin)
         return jsonify({'result': data}), 200
     except Exception as e:
-        print(e)
         return jsonify({'result': False}), 200
 
 if __name__ == '__main__':
