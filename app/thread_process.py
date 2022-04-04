@@ -44,7 +44,7 @@ def process_and_save_result(threadName, fileName, mydb):
     try:
         result = cursor.execute(update_query, update_tuple)
         mydb.commit()
-        print("thread -> Success result: Saved!")
+        print("thread -> Success result")
         return result
     except Exception as e:
         print("thread -> Error result: ", e)

@@ -8,6 +8,7 @@ import mysql.connector
 import save as save
 import get as get
 import calculate as cal
+import verify as verify
 
 from thread_process import * 
 from flask import Flask, request, jsonify
@@ -26,6 +27,7 @@ mydb.set_charset_collation(charset='utf8', collation='utf8_general_ci')
 save.set_db(mydb)
 get.set_db(mydb)
 cal.set_db(mydb)
+verify.set_db(mydb)
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -59,7 +61,7 @@ def save_exam():
 
 @app.route('/login', methods=['POST'])
 def login():
-    result = save.check_user_id_exist(request)
+    result = verify.check_user_id_exist(request)
     return jsonify({'login': result}), 200    
 
 @app.route('/get-exam', methods=['GET'])

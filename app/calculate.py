@@ -30,7 +30,7 @@ def get_execute_database(sql_insert_query):
     try:
         cursor.execute(sql_insert_query)
         result = cursor.fetchall()
-        print("calculate.py -> Success result: Saved!")
+        print("calculate.py -> Success result")
         return result
     except Exception as e:
         print("calculate.py -> Error result: ", e)

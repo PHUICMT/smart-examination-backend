@@ -1,5 +1,6 @@
 from util.string_util import *
 
+import verify as verify
 import os
 from datetime import datetime
 import json
@@ -33,22 +34,32 @@ def save_video(file, filename):
 
 
 def save_result_to_database(request):
-    result_id = genarate_uuid()
     studentId = request.json['studentId']
     exam_pin = request.json['examPin']
     answer = json.dumps(request.json['resultPerItems'])
     start_and_end_time = json.dumps(request.json['startAndEndTime'])
     exam_items_time_stamp = json.dumps(request.json['examItemsTimeStamp'])
-   
-    sql_insert_query = " INSERT INTO Results (id, student_id, exam_pin, answer, start_and_end_time, exam_items_time_stamp) VALUES (%s,%s,%s,%s,%s,%s)"
-    insert_tuple = (
-        result_id,
-        studentId,
-        exam_pin,
-        answer,
-        start_and_end_time,
-        exam_items_time_stamp)
-    return execute_database(sql_insert_query, insert_tuple)
+
+    existed = verify.check_result_exist(request)
+    if not existed:
+        sql_insert_query = " INSERT INTO Results (id, student_id, exam_pin, answer, start_and_end_time, exam_items_time_stamp) VALUES (%s,%s,%s,%s,%s,%s)"
+        insert_tuple = (
+                result_id,
+                studentId,
+                exam_pin,
+                answer,
+                start_and_end_time,
+                exam_items_time_stamp)
+        return execute_database(sql_insert_query, insert_tuple)
+    else:
+        sql_update_query = " UPDATE Results SET answer = %s, start_and_end_time = %s, exam_items_time_stamp = %s WHERE student_id = %s AND exam_pin = %s"
+        update_tuple = (
+            answer,
+            start_and_end_time,
+            exam_items_time_stamp,
+            studentId,
+            exam_pin)
+        return execute_database(sql_update_query, update_tuple)
 
 def save_exam_to_database(request):
     exam_pin = request.json['examPin']
@@ -70,14 +81,6 @@ def save_exam_to_database(request):
     )
     return execute_database(sql_insert_query, insert_tuple)
 
-def check_user_id_exist(request):
-    user_id = request.json['userId']
-    sql_query = "SELECT user_id FROM Users WHERE user_id='" + user_id + "'"
-    result = execute_database(sql_query, None)
-    if len(result) <= 0:
-        return False
-    return True
-
 def set_db(mydb_input):
     global mydb
     mydb = mydb_input
@@ -96,7 +99,7 @@ def execute_database(sql_insert_query, insert_tuple):
             
         result = cursor.fetchall()
         mydb.commit()
-        print("save.py -> Success result: Saved!")
+        print("save.py -> Success result")
         return result
     except Exception as e:
         print("save.py -> Error result: ", e)
