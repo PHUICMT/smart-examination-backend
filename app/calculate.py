@@ -12,8 +12,19 @@ def get_exam_result_from_database(examPin):
     if result is None:
         return None
     data = combine_result_data(result)
+    emotion = data['emotion']
+
+    for item in emotion:
+        for user_result in item:
+            for key, value in user_result.items():
+                print(key)
+        print('\n')
+                
     
-    return data
+    return {
+        'average_score': data['average_score'],
+        'exam_items_time_stamp': data['exam_items_time_stamp']
+    }
 
 def get_execute_database(sql_insert_query):
     if mydb is None:

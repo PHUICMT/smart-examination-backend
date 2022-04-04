@@ -69,7 +69,10 @@ def run_predict(video_path):
 
     camera.release()
     cv2.destroyAllWindows()
-    total_start_end_time = [start_end_time[0], start_end_time[len(start_end_time)-1]]
+
+    end_time = start_end_time[len(start_end_time)-1]
+    total_start_end_time = [start_end_time[0], end_time]
+    
     return (total_emotion, total_emotion_time, total_start_end_time)
 
 def get_timestamp():

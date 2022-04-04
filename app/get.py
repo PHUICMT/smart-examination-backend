@@ -15,7 +15,6 @@ def get_execute_database(sql_insert_query):
     try:
         cursor.execute(sql_insert_query)
         result = cursor.fetchall()
-        print(result)
         print("get.py -> Success result")
         return result
     except Exception as e:
