@@ -42,9 +42,8 @@ def save_result_to_database(request):
 
     existed = verify.check_result_exist(request)
     if not existed:
-        sql_insert_query = " INSERT INTO Results (id, student_id, exam_pin, answer, start_and_end_time, exam_items_time_stamp) VALUES (%s,%s,%s,%s,%s,%s)"
+        sql_insert_query = " INSERT INTO Results (student_id, exam_pin, answer, start_and_end_time, exam_items_time_stamp) VALUES (%s,%s,%s,%s,%s)"
         insert_tuple = (
-                result_id,
                 studentId,
                 exam_pin,
                 answer,
