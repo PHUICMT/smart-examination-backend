@@ -68,7 +68,7 @@ def get_exam_result_from_database(examPin):
 
     percent_of_emote_per_item = {}
     for emote_index, emote in emotion_per_item.items():
-        percent_of_emote_per_item[emote_index] = get_emote_percent(emote)
+        percent_of_emote_per_item[emote_index+1] = get_emote_percent(emote)
 
     return {'percent_of_emote':percent_of_emote_per_item}
 
