@@ -12,6 +12,46 @@ def get_exam_result_from_database(examPin):
     if result is None:
         return None
     data = combine_result_data(result)
+    
+    average_time_per_question = get_average_time_per_question(data)
+    percent_of_emote_per_question = get_percent_of_emote(data)
+
+    return {
+        'average_time_per_question': average_time_per_question,
+        'percent_of_emote_per_question': percent_of_emote_per_question
+    }
+
+def get_average_time_per_question(data):
+    exam_items_time_stamp = data['exam_items_time_stamp']
+
+    total_time_per_user = {}
+    for index, time_stamp in enumerate(exam_items_time_stamp):
+
+        user_index = 'user_'+str(index)
+        total_time_per_user[user_index] = {}
+
+        for question_index ,times in enumerate(time_stamp):
+
+            question_indexed = 'question_'+str(question_index+1)
+            total_time_per_user[user_index][question_indexed] = 0
+
+            for time in times:
+                total_time_per_user[user_index][question_indexed] += (time[1] - time[0])
+
+    total_time_per_question = {}
+    for user_index, user_data in total_time_per_user.items():
+        for question_index, time in user_data.items():
+            if question_index in total_time_per_question:
+                total_time_per_question[question_index] += time
+            else:
+                total_time_per_question[question_index] = time
+
+    for question_index, time in total_time_per_question.items():
+        total_time_per_question[question_index] = round(time / len(total_time_per_user), 2)
+        
+    return total_time_per_question
+
+def get_percent_of_emote(data):
     exam_items_time_stamp = data['exam_items_time_stamp']
     emotion = data['emotion']
 
@@ -68,9 +108,11 @@ def get_exam_result_from_database(examPin):
 
     percent_of_emote_per_item = {}
     for emote_index, emote in emotion_per_item.items():
-        percent_of_emote_per_item[emote_index+1] = get_emote_percent(emote)
+        emote_indexed = 'question_'+str(emote_index+1)
+        percent_of_emote_per_item[emote_indexed] = get_emote_percent(emote)
 
-    return {'percent_of_emote':percent_of_emote_per_item}
+    return percent_of_emote_per_item
+
 
 def get_emote_percent(all_emote):
     sum_emote = sum(all_emote.values())
