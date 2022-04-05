@@ -12,19 +12,87 @@ def get_exam_result_from_database(examPin):
     if result is None:
         return None
     data = combine_result_data(result)
+    exam_items_time_stamp = data['exam_items_time_stamp']
     emotion = data['emotion']
 
+    emotion_time_per_user = []
     for item in emotion:
         for user_result in item:
-            for key, value in user_result.items():
-                print(key)
-        print('\n')
-                
+            emotion_time = user_result.get('emotion_time')
+            if emotion_time is not None:
+                emotion_time_per_user.append(emotion_time)
     
-    return {
-        'average_score': data['average_score'],
-        'exam_items_time_stamp': data['exam_items_time_stamp']
-    }
+    emotion_per_item = {}
+    for user_user, user_time_per_item in enumerate(exam_items_time_stamp):
+        for item_index, time_stamp in enumerate(user_time_per_item):
+            item_emote = {'angry': 0, 'happy': 0, 'neutral': 0, 'sad': 0}
+            for item in time_stamp:
+                angry_count = 0
+                happy_count = 0
+                neutral_count = 0
+                sad_count = 0
+
+                for emote in emotion_time_per_user:
+                    angry = emote.get('angry')
+                    happy = emote.get('happy')
+                    neutral = emote.get('neutral')
+                    sad = emote.get('sad')
+
+                    for angry_item in angry:
+                        if item[0] <= angry_item and item[1] >= angry_item:
+                            angry_count += 1
+                    for happy_item in happy:
+                        if item[0] <= happy_item and item[1] >= happy_item:
+                            happy_count += 1
+                    for neutral_item in neutral:
+                        if item[0] <= neutral_item and item[1] >= neutral_item:
+                            neutral_count += 1
+                    for sad_item in sad:
+                        if item[0] <= sad_item and item[1] >= sad_item:
+                            sad_count += 1
+
+                item_emote['angry'] += angry_count
+                item_emote['happy'] += happy_count
+                item_emote['neutral'] += neutral_count
+                item_emote['sad'] += sad_count
+
+            is_init_emotion_per_item = emotion_per_item.get(item_index)
+
+            if is_init_emotion_per_item:
+                emotion_per_item[item_index]['angry'] += item_emote['angry']
+                emotion_per_item[item_index]['happy'] += item_emote['happy']
+                emotion_per_item[item_index]['neutral'] += item_emote['neutral']
+                emotion_per_item[item_index]['sad'] += item_emote['sad']
+            else:
+                emotion_per_item[item_index] = item_emote
+
+    percent_of_emote_per_item = {}
+    for emote_index, emote in emotion_per_item.items():
+        percent_of_emote_per_item[emote_index] = get_emote_percent(emote)
+
+    return {'percent_of_emote':percent_of_emote_per_item}
+
+def get_emote_percent(all_emote):
+    sum_emote = sum(all_emote.values())
+
+    angry = all_emote['angry']
+    happy = all_emote['happy']
+    neutral = all_emote['neutral']
+    sad = all_emote['sad']
+
+    percent_of_angry = calculate_percent(angry, sum_emote)
+    percent_of_happy = calculate_percent(happy, sum_emote)
+    percent_of_neutral = calculate_percent(neutral, sum_emote)
+    percent_of_sad = calculate_percent(sad, sum_emote)
+
+    percent_emote = {'angry': percent_of_angry, 'happy': percent_of_happy, 'neutral': percent_of_neutral, 'sad': percent_of_sad}
+    return percent_emote
+
+def calculate_percent(x, y):
+    try:
+        return round((x / y * 100), 2)
+    except Exception as e:
+        return 0
 
 def get_execute_database(sql_insert_query):
     if mydb is None:
