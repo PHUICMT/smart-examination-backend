@@ -98,9 +98,7 @@ def execute_database(sql_insert_query, insert_tuple):
             
         result = cursor.fetchall()
         mydb.commit()
-        print("save.py -> Success result")
         return result
     except Exception as e:
-        print("save.py -> Error result: ", e)
         return e
     
