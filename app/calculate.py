@@ -8,15 +8,31 @@ def set_db(mydb_input):
 
 def get_exam_result_from_database(examPin):
     get_result_query = "SELECT total_score, emotion, exam_items_time_stamp FROM Results WHERE exam_pin='" + examPin + "'"
+    get_subject_query = "SELECT exam_subject, created_at FROM Examination WHERE exam_pin='" + examPin + "'"
+
     result = get_execute_database(get_result_query)
+    subject = get_execute_database(get_subject_query)
+
+    subject_name = ""
+    created_at = ""
+
+    try:
+        subject_name = subject[0][0]
+        created_at = subject[0][1]
+    except Exception as e:
+        subject_name = "Unknown"
+        created_at = "Unknown"
+
     if result is None:
         return None
+
     data = combine_result_data(result)
-    
     average_time_per_question = get_average_time_per_question(data)
     percent_of_emote_per_question = get_percent_of_emote(data)
 
     return {
+        'subject_name': subject_name,
+        'created_at': created_at,
         'average_time_per_question': average_time_per_question,
         'percent_of_emote_per_question': percent_of_emote_per_question
     }
@@ -112,7 +128,6 @@ def get_percent_of_emote(data):
         percent_of_emote_per_item[emote_indexed] = get_emote_percent(emote)
 
     return percent_of_emote_per_item
-
 
 def get_emote_percent(all_emote):
     sum_emote = sum(all_emote.values())
