@@ -8,7 +8,7 @@ import json
 UPLOAD_FOLDER = './app/video_storage'
 
 now = datetime.now()
-current_time = now.strftime('%Y-%m-%d %H:%M:%S')
+created_at = now.strftime('%Y-%m-%d %H:%M:%S')
 mydb = None
 
 def save_video(file, filename):
@@ -61,22 +61,22 @@ def save_result_to_database(request):
         return execute_database(sql_update_query, update_tuple)
 
 def save_exam_to_database(request):
-    exam_pin = request.json['examPin']
-    exam_name = request.json['examName']
-    teacher_id = request.json['teacherId']
-    items_count = request.json['itemCount']
-    score = request.json['score']
-    exam = json.dumps(request.json['examItems'])
+    exam_pin = request.json['exam_pin']
+    exam_subject = request.json['exam_subject']
+    exam_title = request.json['exam_title']
+    exam_description = request.json['exam_description']
+    teacher_id = request.json['teacher_id']
+    exam = json.dumps(request.json['exam_items'])
    
-    sql_insert_query = " INSERT INTO Examination (exam_pin, exam_name, teacher_id, items_count, score, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)"
+    sql_insert_query = " INSERT INTO Examination (exam_pin, exam_subject, exam_title, exam_description, teacher_id, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s)"
     insert_tuple = (
         exam_pin,
-        exam_name,
+        exam_subject,
+        exam_title,
+        exam_description,
         teacher_id,
-        items_count,
-        score,
         exam,
-        current_time
+        created_at
     )
     return execute_database(sql_insert_query, insert_tuple)
 
