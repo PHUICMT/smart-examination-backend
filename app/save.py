@@ -44,11 +44,11 @@ def save_result_to_database(request):
     if not existed:
         sql_insert_query = " INSERT INTO Results (student_id, exam_pin, answer, start_and_end_time, exam_items_time_stamp) VALUES (%s,%s,%s,%s,%s)"
         insert_tuple = (
-                studentId,
-                exam_pin,
-                answer,
-                start_and_end_time,
-                exam_items_time_stamp)
+            studentId,
+            exam_pin,
+            answer,
+            start_and_end_time,
+            exam_items_time_stamp)
         return execute_database(sql_insert_query, insert_tuple)
     else:
         sql_update_query = " UPDATE Results SET answer = %s, start_and_end_time = %s, exam_items_time_stamp = %s WHERE student_id = %s AND exam_pin = %s"
@@ -67,18 +67,24 @@ def save_exam_to_database(request):
     exam_description = request.json['exam_description']
     teacher_id = request.json['teacher_id']
     exam = json.dumps(request.json['exam_items'])
-   
-    sql_insert_query = " INSERT INTO Examination (exam_pin, exam_subject, exam_title, exam_description, teacher_id, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-    insert_tuple = (
-        exam_pin,
-        exam_subject,
-        exam_title,
-        exam_description,
-        teacher_id,
-        exam,
-        created_at
-    )
-    return execute_database(sql_insert_query, insert_tuple)
+
+    existed = verify.check_exam_pin_exist(request)
+    if not existed:
+        sql_insert_query = " INSERT INTO Examination (exam_pin, exam_subject, exam_title, exam_description, teacher_id, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        insert_tuple = (
+            exam_pin,
+            exam_subject,
+            exam_title,
+            exam_description,
+            teacher_id,
+            exam,
+            created_at
+        )
+        return execute_database(sql_insert_query, insert_tuple)
+    else:
+        sql_update_query = "UPDATE Examination SET exam_subject = '"+str(exam_subject)+"', exam_title = '"+str(exam_title)+"', exam_description = '"+str(exam_description)+"', exam = '"+str(exam)+"' WHERE exam_pin = '"+str(exam_pin)+"'"
+        return execute_database(sql_update_query, None)
+
 
 def set_db(mydb_input):
     global mydb
@@ -95,10 +101,8 @@ def execute_database(sql_insert_query, insert_tuple):
             cursor.execute(sql_insert_query)
         else:
             cursor.execute(sql_insert_query, insert_tuple)
-            
         result = cursor.fetchall()
         mydb.commit()
         return result
     except Exception as e:
         return e
-    

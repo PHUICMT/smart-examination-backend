@@ -15,6 +15,14 @@ def check_result_exist(request):
         return False
     return True
 
+def check_exam_pin_exist(request):
+    exam_pin = request.json['exam_pin']
+    sql_query = "SELECT exam_pin FROM Examination WHERE exam_pin='" + exam_pin + "'"
+    result = execute_database(sql_query, None)
+    if len(result) <= 0:
+        return False
+    return True
+
 def set_db(mydb_input):
     global mydb
     mydb = mydb_input
