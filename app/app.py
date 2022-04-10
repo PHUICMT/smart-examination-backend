@@ -75,10 +75,8 @@ def get_exam():
             'exam_title': exam[0][2],
             'exam_description': exam[0][3],
             'teacher_id': exam[0][4],
-            'items_count': exam[0][5],
-            'score': exam[0][6],
-            'exam': json.loads(exam[0][7]),
-            'created_at': exam[0][8]
+            'exam': json.loads(exam[0][5]),
+            'created_at': exam[0][6]
         }
         return jsonify({'exam_items': data}), 200
     except Exception as e:
