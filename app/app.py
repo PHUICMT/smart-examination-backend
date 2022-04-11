@@ -1,4 +1,4 @@
-from functools import cache
+# from functools import cache
 from flask_cors import CORS, cross_origin
 
 import json
@@ -10,7 +10,7 @@ import get as get
 import calculate as cal
 import verify as verify
 
-from thread_process import * 
+from thread_process import *
 from flask import Flask, request, jsonify
 
 mydb = mysql.connector.connect(
@@ -19,7 +19,7 @@ mydb = mysql.connector.connect(
     user="admin",
     password="P@ssw0rd",
     database="smart_examination",
-    use_unicode=True, 
+    use_unicode=True,
     charset='utf8'
 )
 mydb.set_charset_collation(charset='utf8', collation='utf8_general_ci')
@@ -36,6 +36,7 @@ app.config['CORS_HEADERS'] = '*'
 
 global predictions_result
 
+
 @app.route('/upload-video', methods=['POST'])
 def upload_webcam_file():
 
@@ -47,22 +48,26 @@ def upload_webcam_file():
     start_process.start()
     start_process.join()
 
-    return jsonify({'upload-result':'Success'}), 200
+    return jsonify({'upload-result': 'Success'}), 200
+
 
 @app.route('/save-result', methods=['POST'])
 def save_result():
     result = save.save_result_to_database(request)
     return jsonify({'save-result': True}), 200
 
+
 @app.route('/save-exam', methods=['POST'])
 def save_exam():
     result = save.save_exam_to_database(request)
     return jsonify({'save-exam': True}), 200
 
+
 @app.route('/login', methods=['POST'])
 def login():
     result = verify.check_user_id_exist(request)
-    return jsonify({'login': result}), 200    
+    return jsonify({'login': result}), 200
+
 
 @app.route('/get-exam', methods=['GET'])
 def get_exam():
@@ -82,14 +87,31 @@ def get_exam():
     except Exception as e:
         return jsonify({'exam_items': False}), 200
 
+
 @app.route('/get-result', methods=['GET'])
 def get_result():
-    examPin = request.args.get('exampin')
     try:
-        data = cal.get_exam_result_from_database(examPin)
+        data = cal.get_exam_result_from_database()
         return jsonify({'result': data}), 200
     except Exception as e:
         return jsonify({'result': False}), 200
+
+
+@app.route('/get-subject', methods=['GET'])
+def get_subject():
+    try:
+        subject = get.get_subject_from_database()
+        data = []
+        for i in range(0, len(subject)):
+            data.append({
+                'subject_id': subject[i][0],
+                'name': subject[i][1],
+            })
+
+        return jsonify({'subject_items': data}), 200
+    except Exception as e:
+        return jsonify({'subject_items': False}), 200
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
