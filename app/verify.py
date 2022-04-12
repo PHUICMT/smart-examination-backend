@@ -1,10 +1,10 @@
 def check_user_id_exist(request):
     user_id = request.json['userId']
-    sql_query = "SELECT user_id FROM Users WHERE user_id='" + user_id + "'"
+    sql_query = "SELECT * FROM Users WHERE user_id='" + user_id + "'"
     result = execute_database(sql_query, None)
     if len(result) <= 0:
         return False
-    return True
+    return result
 
 def check_result_exist(request):
     student_id = request.json['studentId']
