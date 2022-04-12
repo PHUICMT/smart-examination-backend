@@ -90,8 +90,9 @@ def get_exam():
 
 @app.route('/get-result', methods=['GET'])
 def get_result():
+    examPin = request.args.get('exampin')
     try:
-        data = cal.get_exam_result_from_database()
+        data = cal.get_exam_result_from_database(examPin)
         return jsonify({'result': data}), 200
     except Exception as e:
         return jsonify({'result': False}), 200
