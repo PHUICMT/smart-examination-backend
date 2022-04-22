@@ -9,6 +9,6 @@ COPY requirements.txt requirements.txt
 RUN pip install --default-timeout=1000 -r requirements.txt
 
 COPY . .
-RUN cd ./app && mkdir -p temp_video
+RUN cd ./app && mkdir -p video_storage
 
 CMD [ "python", "./app/app.py"]
