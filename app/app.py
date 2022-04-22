@@ -30,13 +30,24 @@ cal.set_db(mydb)
 verify.set_db(mydb)
 
 app = Flask(__name__)
-cors = CORS(app)
+cors = CORS(app,allow_headers=['Content-Type', 'Access-Control-Allow-Origin',
+                         'Access-Control-Allow-Headers', 'Access-Control-Allow-Methods'])
+
 app.config['CORS_HEADERS'] = '*'
 
 
 global predictions_result
 
-
+@app.after_request
+def apply_caching(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS,POST,PUT"
+    response.headers["Access-Control-Allow-Headers"] = \
+        "Access-Control-Allow-Headers,  Access-Control-Allow-Origin, Origin,Accept, " + \
+        "X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"
+    return response
+    
 @app.route('/upload-video', methods=['POST'])
 def upload_webcam_file():
 
