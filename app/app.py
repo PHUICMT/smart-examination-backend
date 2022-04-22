@@ -99,6 +99,29 @@ def get_exam():
         return jsonify({'exam_items': False}), 200
 
 
+@app.route('/get-exam-all', methods=['GET'])
+def get_exam_all():
+    try:
+        exam = get.get_exam_all_from_database()
+        data = []
+        for i in range(0, len(exam)):
+            data.append({
+                'exam_pin': exam[i][0],
+                'exam_subject': exam[i][1],
+                'exam_title': exam[i][2],
+                'exam_description': exam[i][3],
+                'teacher_id': exam[i][4],
+                'item_count': exam[i][5],
+                'score': exam[i][6],
+                'exam': json.loads(exam[i][7]),
+                'created_at': exam[i][8]
+            })
+
+        return jsonify({'exam_items': data}), 200
+    except Exception as e:
+        return jsonify({'exam_items': False}), 200
+
+
 @app.route('/get-result', methods=['GET'])
 def get_result():
     examPin = request.args.get('exampin')
@@ -126,4 +149,4 @@ def get_subject():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=8080)
