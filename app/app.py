@@ -14,7 +14,7 @@ from thread_process import *
 from flask import Flask, request, jsonify
 
 mydb = mysql.connector.connect(
-    host="localhost",
+    host="db",
     port="3306",
     user="admin",
     password="P@ssw0rd",
