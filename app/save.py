@@ -68,8 +68,8 @@ def save_exam_to_database(request):
     teacher_id = request.json['teacher_id']
     exam = json.dumps(request.json['exam_items'])
 
-    existed = verify.check_exam_pin_exist(request)
-    if not existed:
+    existed = verify.check_exam_pin_exist(exam_pin)
+    if not False:
         sql_insert_query = " INSERT INTO Examination (exam_pin, exam_subject, exam_title, exam_description, teacher_id, exam, created_at) VALUES (%s,%s,%s,%s,%s,%s,%s)"
         insert_tuple = (
             exam_pin,
