@@ -113,10 +113,8 @@ def get_exam_all():
                 'exam_title': exam[i][2],
                 'exam_description': exam[i][3],
                 'teacher_id': exam[i][4],
-                'item_count': exam[i][5],
-                'score': exam[i][6],
-                'exam': json.loads(exam[i][7]),
-                'created_at': exam[i][8]
+                'exam': json.loads(exam[i][5]),
+                'created_at': exam[i][6]
             })
 
         return jsonify({'exam_items': data}), 200
